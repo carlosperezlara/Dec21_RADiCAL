@@ -62,7 +62,8 @@ void DRSGroupData::CalibrateTime(int freq) {
 void DRSGroupData::GetX(Double_t *x) {
   x[0] = 0;
   for(int isa=0; isa!=1023; ++isa) { // adding
-    int icell = ( isa + fTC ) % 1024;
+    int icell = isa + fTC;
+    if( icell >= 1023 ) icell -= 1023;
     double dt = fDeltaTime[icell+1] - fDeltaTime[icell];
     x[isa+1] = x[isa] + dt;
   }
