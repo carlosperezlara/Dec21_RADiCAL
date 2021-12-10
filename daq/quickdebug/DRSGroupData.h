@@ -24,7 +24,6 @@ class DRSGroupData {
   UInt_t GetTC() {return fTC;}
   //--------------
   void SetCellOffsetConstant(int ich, int icell, Double_t val) {fCellOffset[ich][icell] = val;}
-  void SetCellTimeOffsetConstant(int icell, Double_t val) {fCellTimeOffset[icell] = val;}
   //--------------
   void LoadCalibrations(TString file1, TString file2, TString file3);
   
@@ -35,12 +34,11 @@ class DRSGroupData {
   UInt_t fChannel[8][1024];
   UInt_t fTR[1024];
 
-  Double_t fDeltaTime[1024]; // *constants* for 8 channels and 1 TR for timeline in each "cell"
+  Double_t fDeltaTime[1024]; // *constants* bin width common to all gthe group
   
   // calibration constants
   Bool_t fApplyOfflineCalibration;
   Double_t fCellOffset[9][1024];
-  Double_t fCellTimeOffset[1024];
   
   ClassDef(DRSGroupData, 0);
 };
