@@ -11,22 +11,44 @@ DRSGroupData::DRSGroupData() {
     fTR[isa] = 0;
   }
   for(int icell=0; icell!=1024; ++icell) {
-    for(int itch=0; itch!=9; ++itch) {
-      fDeltaTime[itch][icell] = 0;
-    }
+    fDeltaTime[icell] = 0;
   }
   fApplyOfflineCalibration = kTRUE;
   //fApplyOfflineCalibration = kFALSE;
   for(int icell=0; icell!=1024; ++icell) {
     for(int ich=0; ich!=8; ++ich) {
       fCellOffset[ich][icell] = 0;
-      fCellTimeOffset[ich][icell] = 0;
     }
+    fCellTimeOffset[icell] = 0;
   }
   CalibrateTime(0);
 }
 //====================================
 DRSGroupData::~DRSGroupData() {
+}
+//====================================
+void DRSGroupData::LoadCalibrations(TString fileCell, TString filePhase, TString fileTime) {
+  int ch, ce;
+  Double_t offset;
+  //===========
+  ifstream icelloffset( fileCell.Data() );
+  for(int ich=0; ich!=9; ++ich) {
+    for(int icell=0; icell!=1024; ++icell) {
+      icelloffset >> ch >> ce >> offset;
+      SetCellOffsetConstant( ch, ce, offset );
+    }
+  }
+  icelloffset.close();
+  //===========
+  ifstream icelltime( fileTime.Data() );
+  Double_t dt = 0.2;// 0.2ns    <== 5.0 GS/s
+  for(int icell=0; icell!=1024; ++icell) {
+    icelltime >> ce >> offset;
+    SetCellTimeOffsetConstant( ce, dt*ce - offset );
+  }
+  icelltime.close();
+
+  CalibrateTime(0);
 }
 //====================================
 void DRSGroupData::CalibrateTime(int freq) {
@@ -35,32 +57,22 @@ void DRSGroupData::CalibrateTime(int freq) {
   if(freq==2) dt = 1.0;    // 1.0ns    <== 1.0 GS/s
   if(freq==3) dt = 1.3333; // 1.3333ns <== 750 MS/s
   // baseline
-  for(int itch=0; itch!=9; ++itch) {
-    for(int icell=0; icell!=1024; ++icell) {
-      fDeltaTime[itch][icell] = dt;
-    }
+  for(int icell=0; icell!=1024; ++icell) {
+    fDeltaTime[icell] = dt;
   }
   //----------------
   if(fApplyOfflineCalibration) {
-    for(int ich=0; ich!=8; ++ich) {
-      for(int icell=0; icell!=1024; ++icell) {
-	fDeltaTime[ich][icell] -= fCellTimeOffset[ich][icell]; // subtracting measured cell dt
-      }
+    for(int icell=0; icell!=1024; ++icell) {
+      fDeltaTime[icell] -= fCellTimeOffset[icell]; // subtracting measured cell dt
     }
-  }
-  //----------------
-  // special case for tch=8 (TR) since it requires no calibration
-  fDeltaTime[8][0] = 0;
-  for(int icell=1; icell!=1024; ++icell) {
-    fDeltaTime[8][icell] += fDeltaTime[8][icell-1];
   }
 }
 //====================================
-void DRSGroupData::GetX(int ich, Double_t *x) {
+void DRSGroupData::GetX(Double_t *x) {
   x[0] = 0;
   for(int isa=0; isa!=1023; ++isa) {
     int icell = ( isa + fTC ) % 1024;
-    x[isa+1] = x[isa] + fDeltaTime[ich][icell];
+    x[isa+1] = x[isa] + fDeltaTime[icell];
   }
 }
 //====================================
@@ -81,13 +93,6 @@ void DRSGroupData::GetTRY(Double_t *y) {
   for(int isa=0; isa!=1024; ++isa) {
     Double_t adc = fTR[isa];
     y[isa] = 1000 * ( adc / 4095. - 0.5 );
-  }
-}
-//====================================
-void DRSGroupData::GetTRX(Double_t *x) {
-  // tch=8 contains already summed axis
-  for(int isa=0; isa!=1024; ++isa) {
-    x[isa] = fDeltaTime[8][isa];
   }
 }
 //====================================
