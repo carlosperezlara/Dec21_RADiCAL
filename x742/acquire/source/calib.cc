@@ -62,7 +62,7 @@ int SaveCorrectionTables( uint32_t groupMask, CAEN_DGTZ_DRS4Correction_t *tables
     tb = &tables[gr];
 
     // cell offset
-    sprintf(fnStr, "%s_gr%d_cell.txt", "x742_calib/Tables", gr);
+    sprintf(fnStr, "%s_gr%d_cell.txt", "../DRSpackage/x742_calib/Tables", gr);
     printf("Saving correction table cell values to %s\n", fnStr);
     if((outputfile = fopen(fnStr, "w")) == NULL)
       return -2;
@@ -74,7 +74,7 @@ int SaveCorrectionTables( uint32_t groupMask, CAEN_DGTZ_DRS4Correction_t *tables
     fclose(outputfile);
 
     // nsample offset
-    sprintf(fnStr, "%s_gr%d_nsample.txt", "x742_calib/Tables", gr);
+    sprintf(fnStr, "%s_gr%d_nsample.txt", "../DRSpackage/x742_calib/Tables", gr);
     printf("Saving correction table nsamples values to %s\n", fnStr);
     if((outputfile = fopen(fnStr, "w")) == NULL)
       return -3;
@@ -86,7 +86,7 @@ int SaveCorrectionTables( uint32_t groupMask, CAEN_DGTZ_DRS4Correction_t *tables
     fclose(outputfile);
     
     // time offset
-    sprintf(fnStr, "%s_gr%d_time.txt", "x742_calib/Tables", gr);
+    sprintf(fnStr, "%s_gr%d_time.txt", "../DRSpackage/x742_calib/Tables", gr);
     printf("Saving correction table time values to %s\n", fnStr);
     if((outputfile = fopen(fnStr, "w")) == NULL)
       return -4;

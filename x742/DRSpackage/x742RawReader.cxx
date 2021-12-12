@@ -54,10 +54,10 @@ bool x742RawReader::ReadEvent() {
   UInt_t EVENTCOUNTER = (uint<<8)>>8;
   //std::cout << " RESERVED: " << RES3 << std::endl;
   //std::cout << " EVENT COUNTER: " << EVENTCOUNTER << std::endl;
-
+  fEventCounter = EVENTCOUNTER;
   fIFS.read((char*) &uint, 4);
-  //std::cout << "Fourth word is " << uint << std::endl; // EVENT TIME
-
+  //std::cout << " EVENT TIME TAG " << uint << std::endl; // EVENT TIME
+  fTimeTag = uint;
   bool allGood = true;
   if(fGroupMask & 0b0001)  allGood = allGood && ReadGroup(0);
   if(fGroupMask & 0b0010)  allGood = allGood && ReadGroup(1);
@@ -141,7 +141,9 @@ bool x742RawReader::ReadGroup(int iGroup) {
   }
   
   fIFS.read((char*) &uint, 4);
-  //std::cout << " GROUP TRIGGER TIME TAG: " << uint << std::endl;
-
+  UInt_t TIMESTAMP = ((uint<<2)>>2);
+  //std::cout << " GROUP TRIGGER TIME TAG: " << TIMESTAMP << std::endl;
+  fGroup[iGroup] -> SetTimeStamp( TIMESTAMP );
+  
   return true;
 }

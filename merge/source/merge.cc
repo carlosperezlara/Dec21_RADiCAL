@@ -1,6 +1,6 @@
 #include <iostream>
-#include "x742RawReader.h"
-#include "DRSGroupData.h"
+#include <x742RawReader.h>
+#include <DRSGroupData.h>
 #include <TString.h>
 #include <TTree.h>
 #include <TFile.h>
@@ -14,12 +14,12 @@ int main() {
   DRSGroupData *group1 = new DRSGroupData();
   fileDRS.SetGroupData( 0, group0 );
   fileDRS.SetGroupData( 1, group1 );
-  group0->LoadCalibrations( "DRSpackage/x742_calib/Tables_gr0_cell.txt",
-			    "DRSpackage/x742_calib/Tables_gr0_nsample.txt",
-			    "DRSpackage/x742_calib/Tables_gr0_time.txt"  );
-  group1->LoadCalibrations( "DRSpackage/x742_calib/Tables_gr1_cell.txt",
-			    "DRSpackage/x742_calib/Tables_gr1_nsample.txt",
-			    "DRSpackage/x742_calib/Tables_gr1_time.txt" );
+  group0->LoadCalibrations( "../x742/DRSpackage/x742_calib/Tables_gr0_cell.txt",
+			    "../x742/DRSpackage/x742_calib/Tables_gr0_nsample.txt",
+			    "../x742/DRSpackage/x742_calib/Tables_gr0_time.txt"  );
+  group1->LoadCalibrations( "../x742/DRSpackage/x742_calib/Tables_gr1_cell.txt",
+			    "../x742/DRSpackage/x742_calib/Tables_gr1_nsample.txt",
+			    "../x742/DRSpackage/x742_calib/Tables_gr1_time.txt" );
   fileDRS.ReadHeader();
 
   // =====================

@@ -1,6 +1,8 @@
 #ifndef __DRSGROUPDATA__
 #define __DRSGROUPDATA__
 
+#include <TString.h>
+
 class DRSGroupData {
  public:
   DRSGroupData();
@@ -26,6 +28,10 @@ class DRSGroupData {
   void SetCellOffsetConstant(int ich, int icell, Double_t val) {fCellOffset[ich][icell] = val;}
   //--------------
   void LoadCalibrations(TString file1, TString file2, TString file3);
+  //--------------
+  UInt_t GetTimeStamp() {return fTimeStamp;}
+  //--------------
+  void SetTimeStamp(UInt_t val) {fTimeStamp = val;}
   
  private:
   // basic data stream
@@ -33,6 +39,7 @@ class DRSGroupData {
   UInt_t fTC;
   UInt_t fChannel[8][1024];
   UInt_t fTR[1024];
+  UInt_t fTimeStamp;
 
   Double_t fDeltaTime[1024]; // *constants* bin width common to all gthe group
   

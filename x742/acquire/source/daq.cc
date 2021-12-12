@@ -15,9 +15,14 @@ void print_info();
 
 //==========================================================================================
 int main(int argc, char **argv) {
-  int nevts = 1000;//atoi(argv[1]);
+  int nevts = 1000;
   bool keep_saving_while_in_spill = false;
 
+  if(argc>1) {
+    std::cout << "testbeam mode engaged" << std::endl;
+    nevts = atoi(argv[1]);
+    keep_saving_while_in_spill = true;
+  }
   
   // ======================= INIT =====================
   std::cout << std::endl;
@@ -98,6 +103,7 @@ int main(int argc, char **argv) {
     else {
       InSpill = false;
     }
+
   }
   std::cout << "=================" << std::endl;
   std::cout << "===== STATS =====" << std::endl;
@@ -161,20 +167,21 @@ int setup() {
 
 
   // Channel DC Offset
-  reg = (0xf<<17)|(0x6ABC); // 0xf means channels 1111 will be affected
-  fLastErrorCode = CAEN_DGTZ_WriteRegister(fHandle, 0x1098, reg); // GROUP 0
-  reg = (0xf<<17)|(0x6ABC); // 0xf means channels 1111 will be affected
-  fLastErrorCode = CAEN_DGTZ_WriteRegister(fHandle, 0x1198, reg); // GROUP 1
+  //reg = (0xf<<17)|(0x6ABC); // 0xf means channels 1111 will be affected
+  //fLastErrorCode = CAEN_DGTZ_WriteRegister(fHandle, 0x1098, reg); // GROUP 0
+  //reg = (0xf<<17)|(0x6ABC); // 0xf means channels 1111 will be affected
+  //fLastErrorCode = CAEN_DGTZ_WriteRegister(fHandle, 0x1198, reg); // GROUP 1
 
   // TR DC Offset
   // approx mV = -(DEC - 33540)*0.0466
+  //reg = 0x8304; // 0 mV
   //reg = 0x6000; // 420 mV
-  reg = 0x6ABC; // 300 mV
+  //reg = 0x6ABC; // 300 mV
   //reg = 0x7000; // 220 mV
   //reg = 0x7FFF; // 0 mV
   //reg = 0x9000; // -150 mV
   //reg = 0xA000; // -350 mV
-  fLastErrorCode = CAEN_DGTZ_WriteRegister(fHandle, 0x10DC, reg);
+  //fLastErrorCode = CAEN_DGTZ_WriteRegister(fHandle, 0x10DC, reg);
   
 
 
@@ -194,14 +201,13 @@ int setup() {
 
   /// TR0 TRIGGER
   CAEN_DGTZ_SetFastTriggerMode(fHandle, CAEN_DGTZ_TRGMODE_ACQ_ONLY);// Trigger with TR0
-
   // default -150mV
   // approx mV = (DEC - 25448)*0.0329
   //reg = 0x4000; // -300 mV
   //reg = 0x5000; // -150 mV
-  //reg = 0x6ABC; // 50 mV
+  reg = 0x6ABC; // 50 mV
   //reg = 0x7000; // 100 mV
-  reg = 0x8000; // 250 mV
+  //reg = 0x8000; // 250 mV
   //reg = 0x9000; // 380 mV
   fLastErrorCode = CAEN_DGTZ_WriteRegister(fHandle, 0x10D4, reg); // Threshold
   

@@ -14,13 +14,14 @@ int quickread() {
   DRSGroupData *group1 = new DRSGroupData();
   file.SetGroupData( 0, group0 );
   file.SetGroupData( 1, group1 );
-  group0->LoadCalibrations( "../x742_calib/Tables_gr0_cell.txt",
-			    "../x742_calib/Tables_gr0_nsample.txt",
-			    "../x742_calib/Tables_gr0_time.txt"  );
-  group1->LoadCalibrations( "../x742_calib/Tables_gr1_cell.txt",
-			    "../x742_calib/Tables_gr1_nsample.txt",
-			    "../x742_calib/Tables_gr1_time.txt" );
+  group0->LoadCalibrations( "../../DRSpackage/x742_calib/Tables_gr0_cell.txt",
+			    "../../DRSpackage/x742_calib/Tables_gr0_nsample.txt",
+			    "../../DRSpackage/x742_calib/Tables_gr0_time.txt"  );
+  group1->LoadCalibrations( "../../DRSpackage/x742_calib/Tables_gr1_cell.txt",
+			    "../../DRSpackage/x742_calib/Tables_gr1_nsample.txt",
+			    "../../DRSpackage/x742_calib/Tables_gr1_time.txt" );
   
+  TGraph *timestamp = new TGraph();
   TH2D *prof[18];
   TH1D *min[18];
   TH1D *max[18];
@@ -45,6 +46,14 @@ int quickread() {
     if(!file.ReadEvent()) break; //all events
     if(nev%500==0)
       cout << "Events read so far: " << nev << endl;
+
+    UInt_t ts_gr0 = group0->GetTimeStamp();
+    UInt_t ts_gr1 = group1->GetTimeStamp();
+    if(ts_gr0 != ts_gr1) {
+      cout << "WARNING!" << endl;
+    }
+    timestamp->SetPoint(nev+1,ts_gr0*8.5e-9,nev);
+    
     Double_t x0[1024];
     Double_t y0[1024];
     Double_t x1[1024];
@@ -125,6 +134,11 @@ int quickread() {
   TCanvas *main3 = new TCanvas("main3","CORRELATION",900,600,800,600);
   corr->Draw("colz");
 
+  TCanvas *main4 = new TCanvas("main4","EVENT TIME",100,600,800,600);
+  timestamp->Draw("A*");
+  timestamp->GetYaxis()->SetTitle("triggers");
+  timestamp->GetXaxis()->SetTitle("seconds");
+  
   return 0;
 }
 

@@ -20,11 +20,15 @@ public:
   void  ReadHeader();
   bool  ReadEvent();
   void  SetGroupData(int igrp, DRSGroupData *val) {fGroup[igrp] = val;}
+  UInt_t GetEventNumber() {return fEventCounter;}
+  UInt_t GetTimeTag() {return fTimeTag;}
   
 private:
   bool ReadGroup(int group);
   std::ifstream fIFS;
   UInt_t fGroupMask;
+  UInt_t fEventCounter;
+  UInt_t fTimeTag;
   DRSGroupData *fGroup[4];
   
   ClassDef(x742RawReader,0);
